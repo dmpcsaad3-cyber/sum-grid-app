@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-void main() {
-  runApp(const SumGridApp());
-}
+void main() => runApp(const SumGridApp());
 
 class SumGridApp extends StatelessWidget {
   const SumGridApp({super.key});
@@ -14,52 +12,48 @@ class SumGridApp extends StatelessWidget {
       title: 'Sum Grid',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-        scaffoldBackgroundColor: const Color(0xFFF5F3FF),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        scaffoldBackgroundColor: const Color(0xFFFAF5FF),
       ),
-      home: const SumGridPage(),
+      home: const SumGridHome(),
     );
   }
 }
 
-class SumGridPage extends StatefulWidget {
-  const SumGridPage({super.key});
+class SumGridHome extends StatefulWidget {
+  const SumGridHome({super.key});
 
   @override
-  State<SumGridPage> createState() => _SumGridPageState();
+  State<SumGridHome> createState() => _SumGridHomeState();
 }
 
-class _SumGridPageState extends State<SumGridPage> {
-  List<List<int>> grid = List.generate(3, (_) => List.generate(3, (_) => 0));
-  List<List<TextEditingController>> controllers = List.generate(
-    3, (_) => List.generate(3, (_) => TextEditingController())
-  );
-  int totalSum = 0;
-  int rowSum = 0;
-  int colSum = 0;
+class _SumGridHomeState extends State<SumGridHome> {
+  final List<List<TextEditingController>> _controllers =
+      List.generate(3, (_) => List.generate(3, (_) => TextEditingController()));
 
-  void calculateSum() {
+  List<List<int>> grid = List.generate(3, (_) => List.filled(3, 0));
+  int total = 0;
+
+  void _calculate() {
     int sum = 0;
-    for (var row in grid) {
-      for (var cell in row) {
-        sum += cell;
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < 3; j++) {
+        sum += grid[i][j];
       }
     }
-    setState(() {
-      totalSum = sum;
-    });
+    setState(() => total = sum);
   }
 
-  void resetGrid() {
+  void _reset() {
     setState(() {
       for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
           grid[i][j] = 0;
-          controllers[i][j].clear();
+          _controllers[i][j].clear();
         }
       }
-      totalSum = 0;
+      total = 0;
     });
   }
 
@@ -67,115 +61,108 @@ class _SumGridPageState extends State<SumGridPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sum Grid App'),
+        title: const Text('Sum Grid'),
         centerTitle: true,
-        elevation: 0,
+        backgroundColor: Colors.deepPurple,
+        foregroundColor: Colors.white,
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Enter Numbers',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            const Text(
+              'Fill the Grid',
+              style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 25),
 
-              // 3x3 GRID
-              Container(
-                padding: const EdgeInsets.all(20),
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.deepPurple.withOpacity(0.1),
-                      blurRadius: 20,
-                      spreadRadius: 5,
-                    )
-                  ],
+            // GRID
+            Expanded(
+              child: GridView.builder(
+                itemCount: 9,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 15,
+                  mainAxisSpacing: 15,
                 ),
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 9,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                  ),
-                  itemBuilder: (context, index) {
-                    int row = index ~/ 3;
-                    int col = index % 3;
-                    return TextField(
-                      controller: controllers[row][col],
+                itemBuilder: (context, index) {
+                  int i = index ~/ 3;
+                  int j = index % 3;
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.deepPurple.withOpacity(0.1),
+                          blurRadius: 10,
+                        )
+                      ],
+                    ),
+                    child: TextField(
+                      controller: _controllers[i][j],
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        filled: true,
-                        fillColor: const Color(0xFFF5F3FF),
+                      style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: '0',
                       ),
-                      onChanged: (value) {
-                        grid[row][col] = int.tryParse(value)?? 0;
-                        calculateSum();
+                      onChanged: (val) {
+                        grid[i][j] = int.tryParse(val)?? 0;
+                        _calculate();
                       },
-                    );
-                  },
-                ),
-              ),
-
-              const SizedBox(height: 30),
-
-              // TOTAL SUM CARD
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.deepPurple, Colors.deepPurple.shade300],
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  children: [
-                    const Text(
-                      'Total Sum',
-                      style: TextStyle(color: Colors.white70, fontSize: 16),
                     ),
-                    Text(
-                      '$totalSum',
+                  );
+                },
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // TOTAL
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(25),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Colors.deepPurple, Colors.purpleAccent],
+                ),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                children: [
+                  const Text('TOTAL SUM',
+                      style: TextStyle(color: Colors.white70, fontSize: 16)),
+                  Text('$total',
                       style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+                          color: Colors.white,
+                          fontSize: 48,
+                          fontWeight: FontWeight.bold)),
+                ],
               ),
+            ),
 
-              const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-              // RESET BUTTON
-              ElevatedButton.icon(
-                onPressed: resetGrid,
-                icon: const Icon(Icons.refresh),
-                label: const Text('Reset Grid'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+            // BUTTONS
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _reset,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(16),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: const Text('Reset', style: TextStyle(fontSize: 18)),
                   ),
                 ),
-              )
-            ],
-          ),
+              ],
+            )
+          ],
         ),
       ),
     );
