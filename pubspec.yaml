@@ -1,4 +1,5 @@
-name: sum_grid_app
+flutter:
+  uses-material-design: truename: sum_grid_app
 description: Sum Grid Game WebView
 publish_to: 'none'
 version: 1.0.0+1
