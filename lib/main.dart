@@ -1,65 +1,46 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const SumGridApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class SumGridApp extends StatelessWidget {
+  const SumGridApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sum Grid',
-      home: SumGridPage(),
+      title: 'Sum Grid App',
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const HomePage(),
     );
   }
 }
 
-class SumGridPage extends StatefulWidget {
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
-  _SumGridPageState createState() => _SumGridPageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _SumGridPageState extends State<SumGridPage> {
-  List<int> grid = List.generate(9, (_) => Random().nextInt(9) + 1);
-  int score = 0;
-  int? firstIndex;
-
-  void tapCell(int index) {
-    setState(() {
-      if (firstIndex == null) {
-        firstIndex = index;
-      } else {
-        int sum = grid[firstIndex!] + grid[index];
-        if (sum == 10) {
-          score += 10;
-          grid[firstIndex!] = Random().nextInt(9) + 1;
-          grid[index] = Random().nextInt(9) + 1;
-        }
-        firstIndex = null;
-      }
-    });
-  }
-
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Score: $score')),
-      body: GridView.builder(
-        padding: EdgeInsets.all(16),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-        itemCount: 9,
-        itemBuilder: (context, i) {
-          return GestureDetector(
-            onTap: () => tapCell(i),
-            child: Card(
-              color: firstIndex == i? Colors.orange : Colors.blue,
-              child: Center(child: Text('${grid[i]}', style: TextStyle(fontSize: 32, color: Colors.white))),
-            ),
-          );
-        },
+      appBar: AppBar(
+        title: const Text('Sum Grid App'),
+        centerTitle: true,
+      ),
+      body: const Center(
+        child: Text(
+          'Welcome to Sum Grid App!\n\nYahan apna grid ka code likho',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 20),
+        ),
       ),
     );
   }
