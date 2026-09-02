@@ -1,6 +1,5 @@
 name: sum_grid_app
-description: A new Flutter project.
-
+description: "A new Flutter project."
 publish_to: "none"
 version: 1.0.0+1
 
@@ -10,7 +9,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  google_mobile_ads: ^5.1.0
 
 flutter:
   uses-material-design: true
