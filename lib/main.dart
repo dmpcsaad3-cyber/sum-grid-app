@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart'; // YE NAYI LINE
 
 void main() {
   runApp(const SumGridApp());
@@ -59,6 +60,14 @@ class _SumGridPageState extends State<SumGridPage> {
       }
       total = 0;
     });
+  }
+
+  // YE NAYA FUNCTION - SMARTLINK OPEN KAREGA
+  Future<void> _openSmartLink() async {
+    final url = Uri.parse('https://canva.link/e7ofnv05n1s6q7u');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    }
   }
 
   @override
@@ -171,6 +180,24 @@ class _SumGridPageState extends State<SumGridPage> {
                 ),
                 child: const Text('Reset Grid',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              ),
+            ),
+
+            const SizedBox(height: 15),
+
+            // YE NAYA BUTTON - SMARTLINK WALA
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _openSmartLink,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  padding: const EdgeInsets.all(16),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                ),
+                child: const Text('🎁 Get Bonus Coins - Sponsor',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
               ),
             )
           ],
