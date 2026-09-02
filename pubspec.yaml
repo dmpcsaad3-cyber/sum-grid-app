@@ -1,5 +1,6 @@
 name: sum_grid_app
-description: A simple Sum Grid game
+description: A new Flutter project.
+
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -7,9 +8,9 @@ environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
-url_launcher: ^6.2.5
   flutter:
     sdk: flutter
+  url_launcher: ^6.2.5
 
 flutter:
   uses-material-design: true
