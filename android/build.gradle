@@ -3,9 +3,12 @@ plugins {
     id "org.jetbrains.kotlin.android"
     id "dev.flutter.flutter-gradle-plugin"
 }
+
 android {
     namespace "com.example.sum_grid_app"
     compileSdkVersion 34
+    ndkVersion "25.1.8937393"
+
     defaultConfig {
         applicationId "com.example.sum_grid_app"
         minSdkVersion 21
@@ -13,4 +16,13 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.debug
+        }
+    }
+}
+
+dependencies {
 }
